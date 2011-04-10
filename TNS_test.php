@@ -1,5 +1,5 @@
-<?php
-require('tnetstrings.php');
+    <?php
+require('TNetString.php');
 /**
     These are encoded/dumped tnetstrings obtained from the reference implementation. after setting x to something, I simply did:
         # print dump(x)
@@ -27,7 +27,7 @@ echo "======================\n";
 foreach($ref_samples as $sample){
     echo "checking: ". $sample."\n";
     try {
-        $var = tns_decode($sample); 
+        $var = TNetString::decode($sample); 
         echo "\tGOOD\n";
     }catch (Exception $e){
         echo "\tFUCK: ".$e->getMessage()."\n";
@@ -53,16 +53,15 @@ $php_samples = array(
 foreach($php_samples as $i=>$sample){
     echo "phpsample #".$i."\n";
     $orig = print_r($sample,true);
-    $data = tns_encode($sample);
+    $data = TNetString::encode($sample);
     $fucked = false;
     if ($data != $ref_samples[$i]){
         $fucked = true;
         echo "\tFUCK! - does not match ref sample\n";
-        echo "\tenc: {$data} != ref: {$ref_samples[$i]}\n";
     } else {
         echo "\tGOOD - tns_encode() matches ref sample\n";
     }
-    list($new, $crap) = tns_decode($data);
+    list($new, $crap) = TNetString::decode($data);
     $new = print_r($new, true);
     if ($orig !== $new){
         $fucked = true;
