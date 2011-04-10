@@ -1,11 +1,51 @@
 <?php
 require('tnetstrings.php');
 /**
+    Zed's test setup from http://codepad.org/gfpQLnZP
+**/
+echo "\nCHECK ORIG TEST SAMPLES\n";
+echo "======================\n";
+$tests = array(
+    '0:}' => array(),
+    '0:]' => array(),
+    '51:5:hello,39:11:12345678901#4:this,4:true!0:~4:'."\x00\x00\x00\x00".',]}' =>
+            array('hello'=>array(12345678901, 'this', true, null, "\x00\x00\x00\x00")),
+    '5:12345#'=> 12345,
+    '12:this is cool,'=> "this is cool",
+    '0:,'=> "",
+    '0:~'=> null,
+    '4:true!'=> true,
+    '5:false!'=> false,
+    "10:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00,"=> "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",
+    '24:5:12345#5:67890#5:xxxxx,]'=> array(12345, 67890, 'xxxxx')
+    );
+
+foreach($tests as $data=>$expect){
+    echo "checking: ". $data."\n";
+    try {
+        list($payload, $remain) = tns_decode($data);
+        if ($remain){ 
+            echo "\tFUCK - Had trailing junk: ". $remain . "\n";
+        } else {
+            if ($payload !== $expect){
+                echo "\tFUCK - Payload/expected don't match\n";
+                var_dump($payload);
+                var_dump($expect);
+            } else {
+                echo "\tGOOD\n";
+            }
+        }
+    } catch (Exception $e){
+        echo "\tFUCK @- ".$e->getMessage()."\n";
+    }
+
+}
+
+/**
     These are encoded/dumped tnetstrings obtained from the reference implementation. after setting x to something, I simply did:
         # print dump(x)
     We're just going to run through them and make sure they are parseable
 **/
-
 $ref_samples = array(
     // x = None
     '0:~',

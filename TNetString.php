@@ -3,9 +3,9 @@ class TNetString {
     public static function encode($data){
         if ( is_float($data) || is_int($data) ){
             $data = (string)$data;
-            return sprintf('%d:%s#', strlen($data), $data);
+            return strlen($data) . ':' . $data . '#';
         } elseif( is_string($data) ){
-            return sprintf('%d:%s,', strlen($data), $data);
+            return strlen($data) . ':' . $data . ',';
         } elseif( is_array($data) ){
             $ak = array_pop(array_keys($data));
             if (is_int($ak)){
@@ -14,7 +14,7 @@ class TNetString {
                     $parts[] = self::encode($v);
                 }
                 $payload = implode('',$parts);
-                return sprintf('%d:%s]',strlen($payload),$payload);
+                return strlen($payload).':'.$payload.']';
             } else {
                 $parts = array();
                 foreach($data as $k=>$v){
@@ -22,13 +22,13 @@ class TNetString {
                     $parts[] = self::encode($v);
                 }
                 $payload = implode('',$parts);
-                return sprintf('%d:%s}',strlen($payload),$payload);
+                return strlen($payload).':'.$payload.'}';
             }
         } elseif($data === null){
             return '0:~';
         } elseif(is_bool($data)){
             $repr = $data?'true':'false';
-            return sprintf('%d:%s!',strlen($repr),$repr);
+            return strlen($repr).':'.$repr.'!';
         }
         throw new Exception("Can't serialize stuff that's ".gettype($data));
     }

@@ -2,9 +2,9 @@
 function tns_encode($data){
     if ( is_float($data) || is_int($data) ){
         $data = (string)$data;
-        return sprintf('%d:%s#', strlen($data), $data);
+        return strlen($data) . ':' . $data . '#';
     } elseif( is_string($data) ){
-        return sprintf('%d:%s,', strlen($data), $data);
+        return strlen($data) . ':' . $data . ',';
     } elseif( is_array($data) ){
         $ak = array_pop(array_keys($data));
         if (is_int($ak)){
@@ -13,7 +13,7 @@ function tns_encode($data){
                 $parts[] = tns_encode($v);
             }
             $payload = implode('',$parts);
-            return sprintf('%d:%s]',strlen($payload),$payload);
+            return strlen($payload).':'.$payload.']';
         } else {
             $parts = array();
             foreach($data as $k=>$v){
@@ -21,13 +21,13 @@ function tns_encode($data){
                 $parts[] = tns_encode($v);
             }
             $payload = implode('',$parts);
-            return sprintf('%d:%s}',strlen($payload),$payload);
+            return strlen($payload).':'.$payload.'}';
         }
     } elseif($data === null){
         return '0:~';
     } elseif(is_bool($data)){
         $repr = $data?'true':'false';
-        return sprintf('%d:%s!',strlen($repr),$repr);
+        return strlen($repr).':'.$repr.'!';
     }
     throw new Exception("Can't serialize stuff that's ".gettype($data));
 }
@@ -45,7 +45,7 @@ function tns_decode($data){
             }
             $value = null;
             break;
-        case ',': $value = (string)$payload;break;
+        case ',': $value = $payload;break;
         default:
             throw new Exception("Invalid payload type: ".$payload_type);
     }
